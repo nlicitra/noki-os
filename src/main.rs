@@ -3,8 +3,6 @@
 #![feature(custom_test_frameworks)]
 #![test_runner(noki_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
-#![allow(dead_code)]
-
 
 use core::panic::PanicInfo;
 use noki_os::println;
@@ -26,8 +24,13 @@ fn panic(info: &PanicInfo) -> ! {
 pub extern "C" fn _start() -> ! {
     println!("Hello world{}", "!");
 
+    noki_os::init();
+
+    x86_64::instructions::interrupts::int3();
+
     #[cfg(test)]
     test_main();
 
+    println!("It did not crash!");
     loop {}
 }
